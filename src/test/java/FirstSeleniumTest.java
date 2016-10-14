@@ -14,7 +14,7 @@ import java.io.IOException;
 /**
  * Created by richa.mittal on 2016-09-21.
  */
-public class FirstTest {
+public class FirstSeleniumTest {
 
     private static WebDriver driver;
     private static String username = "spy";

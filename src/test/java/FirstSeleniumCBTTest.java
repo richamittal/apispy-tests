@@ -6,6 +6,7 @@
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -27,11 +28,10 @@ public class FirstSeleniumCBTTest {
     String testScore = "unset";
     RemoteWebDriver driver;
 
-    @BeforeClass
-    public void OpenBrowser() throws MalformedURLException {
+    @Before
+    public void setUp() throws MalformedURLException {
 
         DesiredCapabilities caps = new DesiredCapabilities();
-
         caps.setCapability("name", "Basic Example");
         caps.setCapability("build", "1.0");
         caps.setCapability("browser_api_name", "Chrome53x64");
@@ -50,35 +50,29 @@ public class FirstSeleniumCBTTest {
         System.out.println("Loading Url");
         driver.get("http://spy:dontspyhere@apispy.io:3000");
     }
+    @After
+    public void tearDown(){
+          // quit the driver
+            driver.quit();
+    }
 
     @Test
     public void MUSIsDisplayedTest() throws Exception {
 
         FirstSeleniumCBTTest myTest = new FirstSeleniumCBTTest();
 
-        // we wrap the test in a try catch loop so we can log assert failures in our system
         try {
 
-            // load the page url
-
-
-            // maximize the window - DESKTOPS ONLY
-            //System.out.println("Maximizing window");
-            //driver.manage().window().maximize();
-
             //test if the method is displayed
-            System.out.println("Checking if Method is displayed");
             Assert.assertTrue(driver.findElement(By.id("method")).isDisplayed());
             //test if the URI is displayed
-            System.out.println("Checking if URI is displayed");
             Assert.assertTrue(driver.findElement(By.id("req-url")).isDisplayed());
             //test if the send button is displayed
-            //System.out.println("Checking if Send is displayed");
             //Assert.assertTrue(driver.findElement(By.id("sendButton")).isDisplayed());
 
             // if we get to this point, then all the assertions have passed
             // that means that we can set the score to pass in our system
-            myTest.testScore = "pass";
+             myTest.testScore = "pass";
         } catch (AssertionError ae) {
 
             // if we have an assertion error, take a snapshot of where the test fails
@@ -92,11 +86,9 @@ public class FirstSeleniumCBTTest {
 
             // here we make an api call to actually send the score
             myTest.setScore(driver.getSessionId().toString(), myTest.testScore);
-
-            // and quit the driver
-            driver.quit();
         }
     }
+
     public JsonNode setScore(String seleniumTestId, String score) throws UnirestException {
         // Mark a Selenium test as Pass/Fail
         HttpResponse<JsonNode> response = Unirest.put("http://crossbrowsertesting.com/api/v3/selenium/{seleniumTestId}")

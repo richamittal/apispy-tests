@@ -32,13 +32,13 @@ public class FirstSeleniumCBTTest {
     public void setUp() throws MalformedURLException {
 
         DesiredCapabilities caps = new DesiredCapabilities();
-        caps.setCapability("name", "Basic Example");
+        caps.setCapability("name", "ApiSpy Test");
         caps.setCapability("build", "1.0");
         caps.setCapability("browser_api_name", "Chrome53x64");
         caps.setCapability("os_api_name", "Win7x64-C1");
         caps.setCapability("screen_resolution", "1024x768");
-        caps.setCapability("record_video", "true");
-        caps.setCapability("record_network", "true");
+        caps.setCapability("record_video", "false");
+        caps.setCapability("record_network", "false");
 
         driver = new RemoteWebDriver(new URL("http://" + username + ":" + authkey + "@hub.crossbrowsertesting.com:80/wd/hub"), caps);
         System.out.println(driver.getSessionId());
@@ -57,7 +57,7 @@ public class FirstSeleniumCBTTest {
     }
 
     @Test
-    public void MUSIsDisplayedTest() throws Exception {
+    public void MethodIsDisplayedTest() throws Exception {
 
         FirstSeleniumCBTTest myTest = new FirstSeleniumCBTTest();
 
@@ -65,14 +65,68 @@ public class FirstSeleniumCBTTest {
 
             //test if the method is displayed
             Assert.assertTrue(driver.findElement(By.id("method")).isDisplayed());
-            //test if the URI is displayed
+
+            // if we get to this point, then all the assertions have passed
+            // that means that we can set the score to pass in our system
+             myTest.testScore = "pass";
+        } catch (AssertionError ae) {
+
+            // if we have an assertion error, take a snapshot of where the test fails
+            // and set the score to "fail"
+            String snapshotHash = myTest.takeSnapshot(driver.getSessionId().toString());
+            myTest.setDescription(driver.getSessionId().toString(), snapshotHash, ae.toString());
+            myTest.testScore = "fail";
+        } finally {
+
+            System.out.println("Test complete: " + myTest.testScore);
+
+            // here we make an api call to actually send the score
+            myTest.setScore(driver.getSessionId().toString(), myTest.testScore);
+        }
+    }
+
+    @Test
+    public void URLIsDisplayedTest() throws Exception {
+
+        FirstSeleniumCBTTest myTest = new FirstSeleniumCBTTest();
+
+        try {
+            //test if the URL is displayed
             Assert.assertTrue(driver.findElement(By.id("req-url")).isDisplayed());
             //test if the send button is displayed
             //Assert.assertTrue(driver.findElement(By.id("sendButton")).isDisplayed());
 
             // if we get to this point, then all the assertions have passed
             // that means that we can set the score to pass in our system
-             myTest.testScore = "pass";
+            myTest.testScore = "pass";
+        } catch (AssertionError ae) {
+
+            // if we have an assertion error, take a snapshot of where the test fails
+            // and set the score to "fail"
+            String snapshotHash = myTest.takeSnapshot(driver.getSessionId().toString());
+            myTest.setDescription(driver.getSessionId().toString(), snapshotHash, ae.toString());
+            myTest.testScore = "fail";
+        } finally {
+
+            System.out.println("Test complete: " + myTest.testScore);
+
+            // here we make an api call to actually send the score
+            myTest.setScore(driver.getSessionId().toString(), myTest.testScore);
+        }
+    }
+
+    @Test
+    public void SendIsDisplayedTest() throws Exception {
+
+        FirstSeleniumCBTTest myTest = new FirstSeleniumCBTTest();
+
+        try {
+            //test if the send button is displayed
+            Assert.assertTrue(driver.findElement(By.id("sendButton")).isDisplayed());
+
+            // if we get to this point, then all the assertions have passed
+            // that means that we can set the score to pass in our system
+            myTest.testScore = "pass";
         } catch (AssertionError ae) {
 
             // if we have an assertion error, take a snapshot of where the test fails
